@@ -1,6 +1,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using CounterChallenge;
-namespace CounterChallengeTests
+using Counter;
+namespace CounterTests
 {
     [TestClass]
     public class SampleTests

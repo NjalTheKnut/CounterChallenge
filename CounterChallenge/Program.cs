@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Collections.Generic;
 
-namespace CounterChallenge
+namespace Counter
 {
     public class Program
     {
