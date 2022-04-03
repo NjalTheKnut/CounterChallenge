@@ -1,23 +1,30 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
+
 namespace CounterChallenge
 {
     public class Program
     {
-        private string result;
-        static void Main(string[] args)
+        public Program()
         {
-            Program instance = new Program();
-            instance.menu();
+            Result = "";
         }
 
-        public string getResult()
-        {
-            return this.result;
-        }
+        public string Result { get; set; }
 
-        public void menu()
+        private static void Main(string[] args)
+        {
+            if (args is null)
+            {
+                throw new ArgumentNullException(nameof(args));
+            }
+
+            Program instance = new Program();  //  Instantiate the class into a variable.
+            instance.Menu();  //  Call the UI function to engage the user for interaction.
+        }
+        
+        public void Menu()
         {
             bool quit = false;
             Console.WriteLine("Welcome to Neal's Counter Challenge Solution!");
@@ -25,7 +32,7 @@ namespace CounterChallenge
             while (!quit)
             {
                 Console.WriteLine("Please type a test string to count, or 'q' to quit, then press Enter:");
-                Console.WriteLine("\n");
+                Console.Write("-----------------------------------------------------------------------\n");
                 string userInput = Console.ReadLine();
                 if (userInput.ToLower() == "q")
                 {
@@ -33,18 +40,18 @@ namespace CounterChallenge
                 }
                 else
                 {
-                    if (userInput != "")
+                    if (userInput != "")  // if the user has entered a valid input,
                     {
-                        Console.WriteLine("\n");
-                        ParseInput(userInput);
-                        Console.WriteLine(result);  // output our result variable to the console.
+                        Console.Write("\n");
+                        ParseInput(userInput);  // pass it to our core logic for counting,
+                        Console.WriteLine("\t"+Result);  // and output our class level result variable to the console.
                         Console.WriteLine("\n");
                     }
-                    else
+                    else  //  if an empty input is given,
                     {
-                        Console.WriteLine("\n");
+                        Console.Write("---------------------------------------------------------------------\n");
                         Console.WriteLine("The sentence entered cannot be null!  Please enter at least one word.");
-                        Console.WriteLine("\n");
+                        Console.WriteLine("---------------------------------------------------------------------\n");
                     }
                 }
             }
@@ -55,17 +62,21 @@ namespace CounterChallenge
         }
 
         /* core program logic */
-        /*
-         Parses the input string and outputs each word in the following format:
-                <First> + <Count> + <Last>
-            Where:
-                <First> is the initial letter of the word
-                <Count> is the number of distinct letters found excluding <First> and <Last>
-                <Last> is the final letter in the word
-            The output is then returned by the function, and stored in a class variable.
+        /* ------------------------------------------
+         * [ParseInput(string)>>>string]
+         * [<name>(args)>>>return]
+         * ------------------------------------------
+         * Parses the input string and outputs each word in the following format:
+         *       <First> + <Count> + <Last>
+         *   Where:
+         *       <First> is the initial letter of the word
+         *       <Count> is the number of distinct letters found excluding <First> and <Last>
+         *       <Last> is the final letter in the word
+         *   The output is then returned by the function, and stored in a class variable.
          */
         public string ParseInput(string strInput)
         {
+            // Define local variables (explanatory comments at right)
             string strOutput = "";  // return variable to send output to the user
             string tmpStr;  //  temporary string variable
             int iter = 0; // Counter variable to track whether we have reached the end of the array.
@@ -74,44 +85,42 @@ namespace CounterChallenge
             string splitChars = "";  // used to store the non-letter characters so the input can be split into words.
             string[] words; // stores the alphabetic strings between non-aplhabetic characters.
             char[] tmpChars;  //  used as a container to process and add each counted word to the output string.
+            
             /* store all non-Letter characters into an array */
             foreach (char c in inputChars)
             {
-                if (!Char.IsLetter(c))
+                if (!Char.IsLetter(c))  //  <<< Edit this condition to reuse or repurpose this function  <<<
                 {
                     nonLetters.Add(c);
                 }
             }
 
-            /* segment the input on the nonLetter symbols and store as an array */
+            /* segment our input on its non-letter symbols and store them as an array of words */
             foreach (char c in nonLetters)
             {
                 splitChars += c;
             }
             words = strInput.Split(splitChars.ToCharArray());
 
-            /* iterate over each word */
+            /* iterate over each word and execute custom logic as appropriate */
             foreach (string w in words)
             {
-                
-                if (!Char.IsLetter(strInput[0]) && iter == 0)  // if the first character from input is non-aplhabetic,
-                {
-                    strOutput += splitChars[iter].ToString();  // then we want to add this directly to output,
-                    iter++;  // and increment our iterator to move ahead in the list of non-letter input characters.
-                }
                 if (w.Length == 1)  // if we encounter a word with only one letter,
                 {
                     tmpStr = w;  // then no counting is required, so output as-is.
-                } else // otherwise, we have encountered a 2+ letter word that can be counted.
+                } 
+                else // otherwise, we have encountered either a 2+ letter word that can be counted, or an "isolated" non-letter character with no adjacent word
                 {
-                    if (w.Length == 2)  // if this is a two letter word,
+                    if (w.Length == 0) // if we have a length of zero, we have encountered a non-letter symbol by itself,
                     {
-                        tmpStr = w[0] + "0" + w[1];  // output a zero between them to provide an accurate, consistent count.
+                        tmpStr = "";  // so set our temporary variable to an empty string to continue, (the symbol is added later).
                     }
-                    else  // otherwise, we have a 3+ letter word to count.
+                    else  // otherwise, we have a 2+ letter word to count.
                     {
                         tmpChars = w.ToCharArray(1, w.Length - 2);  // store the letters in this word, excluding the first and last.
-                        tmpStr = w[0] + tmpChars.Distinct().ToArray().Length.ToString() + w[w.Length - 1];  // concatenate the first letter, count of distinct letters, and last letter.
+                        tmpStr = w[0]
+                                 + tmpChars.Distinct().ToArray().Length.ToString()
+                                 + w[^1];  // concatenate the first letter, count of distinct letters, and last letter.
                     }
                 }
                 
@@ -122,8 +131,8 @@ namespace CounterChallenge
                     iter++;  // increment our iterator after adding each non-letter character.
                 }
             }
-            result = strOutput;
-            return strOutput;
+            Result = strOutput;  //  Assign the output we produced to our class level variable.
+            return strOutput;  //  Return our result to the caller also, because options are nice!
         }
 
     }
