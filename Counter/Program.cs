@@ -6,13 +6,16 @@ namespace Counter
 {
     public class Program
     {
+        // Class Constructor
         public Program()
         {
             Result = "";
         }
 
+        // Accessible Class Variable
         public string Result { get; set; }
 
+        // Class Main Function
         private static void Main(string[] args)
         {
             if (args is null)
@@ -24,11 +27,15 @@ namespace Counter
             instance.Menu();  //  Call the UI function to engage the user for interaction.
         }
         
+        // Console User Interface
         public void Menu()
         {
             bool quit = false;
             Console.WriteLine("Welcome to Neal's Counter Challenge Solution!");
-            Console.WriteLine("---------------------------------------------\n");
+            Console.WriteLine("This program counts distinct letters in words.");
+            Console.WriteLine("It skips first, last, and non-letter characters.");
+            Console.WriteLine("\tEnjoy!");
+            Console.WriteLine("------------------------------------------------\n");
             while (!quit)
             {
                 Console.WriteLine("Please type a test string to count, or 'q' to quit, then press Enter:");
